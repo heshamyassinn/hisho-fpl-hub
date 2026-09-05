@@ -1,3 +1,4 @@
+# trigger v5.4 application
 name: Apply v5.4 mobile and transfers
 on:
   push:
