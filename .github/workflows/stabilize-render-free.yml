@@ -1,0 +1,44 @@
+name: Stabilize Render Free
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  stabilize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch memory-heavy market loading
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('public/app.js')
+          s=p.read_text()
+          old="async function init(){loadProfilePhoto();updateCompare();setConnectState(false);await Promise.all([loadPublicData(),loadAccount()]);loadMarketData();if(state.entryId)await connect(state.entryId)}"
+          new="async function init(){loadProfilePhoto();updateCompare();setConnectState(false);await Promise.all([loadPublicData(),loadAccount()]);if(state.entryId)await connect(state.entryId)}"
+          if old not in s:
+              raise SystemExit('init pattern not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+
+          p=Path('server.js')
+          s=p.read_text()
+          start=s.index("app.get('/api/market-data'")
+          end=s.index("\n\napp.get('/api/fpl/bootstrap'", start)
+          safe="app.get('/api/market-data',async(req,res)=>res.json({updated_at:new Date().toISOString(),source:'safe-mode',transfers:[],images:[],warning:'Transfer enrichment temporarily disabled to protect the Render Free memory limit.'}));"
+          s=s[:start]+safe+s[end:]
+          p.write_text(s)
+          PY
+          node --check server.js
+          node --check public/app.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server.js public/app.js
+          git commit -m "Stabilize Render Free memory usage"
+          git push
