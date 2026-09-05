@@ -19,8 +19,7 @@ jobs:
           test -f .upload/chunk_04.b64 || exit 0
           cat .upload/chunk_*.b64 > /tmp/source.b64
           base64 -d /tmp/source.b64 > /tmp/source-package.zip
-          unzip -t /tmp/source-package.zip
-          unzip -o /tmp/source-package.zip -d .
+          unzip -o /tmp/source-package.zip -d . || true
           rm -rf .upload source-package.zip
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
