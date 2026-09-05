@@ -1,0 +1,22 @@
+name: Restore full mobile index
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore complete index and bump cache
+        run: |
+          git show dd03dc245f0eba4e6b4e7ba3bb827c06ffcf1c63:public/index.html > public/index.html
+          sed -i 's/mobile-v52.css?v=52/mobile-v52.css?v=53/' public/index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/index.html
+          git commit -m "Restore full app index with mobile v5.3" || exit 0
+          git push
