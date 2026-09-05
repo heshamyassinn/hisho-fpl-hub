@@ -1,9 +1,1 @@
-#!/bin/bash
-cd "$(dirname "$0")"
-if ! command -v node >/dev/null 2>&1; then
-  echo "Node.js 20+ is required."
-  exit 1
-fi
-[ -d node_modules ] || npm install
-(sleep 2; open http://localhost:4173) &
-npm start
+#!/bin/bash\ncd "$(dirname "$0")"\nif ! command -v node >/dev/null 2>&1; then\n  echo "Node.js 20+ is required."\n  exit 1\nfi\n[ -d node_modules ] || npm install\n(sleep 2; open http://localhost:4173) &\nnpm start\n

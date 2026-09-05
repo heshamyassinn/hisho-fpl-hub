@@ -1,15 +1,1 @@
-@echo off
-setlocal
-cd /d "%~dp0"
-where node >nul 2>nul
-if errorlevel 1 (
-  echo Node.js 20+ is required. Install from https://nodejs.org and run this file again.
-  pause
-  exit /b 1
-)
-if not exist node_modules (
-  echo Installing dependencies...
-  call npm install
-)
-start "" http://localhost:4173
-call npm start
+@echo off\nsetlocal\ncd /d "%~dp0"\nwhere node >nul 2>nul\nif errorlevel 1 (\n  echo Node.js 20+ is required. Install from https://nodejs.org and run this file again.\n  pause\n  exit /b 1\n)\nif not exist node_modules (\n  echo Installing dependencies...\n  call npm install\n)\nstart "" http://localhost:4173\ncall npm start\n

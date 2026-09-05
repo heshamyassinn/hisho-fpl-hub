@@ -66,6 +66,7 @@ async function getUnderstatShots(season){
     const league=await cachedAjaxJson(`https://understat.com/getLeagueData/EPL/${season}`,1800000);
     dates=Array.isArray(league?.dates)?league.dates:[];
   }catch(ajaxError){
+    // Backward-compatible fallback for older Understat page payloads.
     const leagueHtml=await cachedText(`https://understat.com/league/EPL/${season}`,1800000);
     const legacy=extractEncoded(leagueHtml,'datesData');
     dates=Array.isArray(legacy)?legacy:(Array.isArray(legacy?.dates)?legacy.dates:[]);source='Understat legacy fallback';

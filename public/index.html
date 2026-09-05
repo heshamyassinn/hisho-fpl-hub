@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#071410" />
+  <meta name="description" content="Hisho FPL Hub — professional Fantasy Premier League intelligence, transfer planning, league leverage, projections and player news." />
+  <meta name="application-name" content="Hisho FPL Hub" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Hisho FPL Hub" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+
+  <title>Hisho FPL Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient a"></div><div class="ambient b"></div><div class="ambient c"></div><div class="noise"></div>
+  <div class="app-shell">
+    <aside class="sidebar glass">
+      <div class="brand">
+        <div class="brand-mark">H</div>
+        <div><b>Hisho FPL Hub</b><span>Fantasy Intelligence OS</span></div>
+      </div>
+      <nav>
+        <button class="nav active" data-view="dashboard"><span>⌂</span><b>Dashboard</b></button>
+        <button class="nav" data-view="planner"><span>✦</span><b>Transfer Planner</b></button>
+        <button class="nav" data-view="squad"><span>◈</span><b>My Squad</b></button>
+        <button class="nav" data-view="players"><span>⌕</span><b>Player Lab</b></button>
+        <button class="nav" data-view="compare"><span>⇄</span><b>Compare</b><em id="compareCount">0</em></button>
+        <button class="nav" data-view="leagues"><span>◎</span><b>League Intelligence</b></button>
+        <button class="nav" data-view="fixtures"><span>▦</span><b>Fixture Difficulty</b></button>
+        <button class="nav" data-view="simulator"><span>◫</span><b>GW Simulator</b></button>
+        <button class="nav" data-view="news"><span>◉</span><b>News Room</b></button>
+        <button class="nav" data-view="transfers"><span>↗</span><b>Transfers</b></button>
+        <button class="nav" data-view="history"><span>◷</span><b>GW History</b></button>
+      </nav>
+      <div class="source-health"><i class="pulse-dot"></i><div><small>DATA STATUS</small><b id="dataHealth">Not connected</b><span id="understatHealth">Advanced: waiting</span></div></div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><span class="eyebrow">PREMIER LEAGUE · DECISION INTELLIGENCE</span><h1 id="pageTitle">Command Center</h1></div>
+        <div class="top-actions"><button class="secondary ios-install" id="iosInstallHint" type="button">Add to Home Screen</button><div class="sync-pill"><i></i><span id="syncText">Offline</span></div><button class="icon-btn" id="refreshBtn">↻</button><button class="secondary" id="accountBtn">Account</button><button class="primary" id="connectBtn">Connect FPL <b>→</b></button></div>
+      </header>
+
+      <section id="dashboard" class="view active">
+        <section class="profile-hero glass reveal">
+          <div class="profile-block">
+            <label class="profile-photo-wrap" title="Click to add/change your photo"><img id="profilePhoto" alt="Profile photo"><span id="profileInitials">HY</span><input id="profileUpload" type="file" accept="image/*"></label>
+            <div><span class="kicker" id="gwLabel">GAMEWEEK —</span><h2>Hisho FPL Hub</h2><p id="heroSub">Connect your FPL team to unlock transfers, league leverage, projections and live intelligence.</p><div class="hero-tags"><span>Official FPL prices</span><span>League ownership</span><span>Advanced shots</span><span>3–5 GW projections</span></div></div>
+          </div>
+          <div class="hero-kpis"><div><span>GW Points</span><b id="heroPoints">—</b><small>Live</small></div><div><span>Overall Rank</span><b id="heroRank">—</b><small>Global</small></div><div><span>Team Value</span><b id="heroValue">—</b><small>Official</small></div><div class="ft-kpi"><span>Free Transfers</span><b id="heroFT">—</b><small id="ftSource">Estimated</small></div></div>
+        </section>
+
+        <div class="metric-grid reveal delay-1">
+          <article class="metric-card glass"><span class="metric-icon">⚡</span><div><small>GW POINTS</small><b id="mPoints">—</b><span>Live score</span></div></article>
+          <article class="metric-card glass"><span class="metric-icon">£</span><div><small>BANK</small><b id="mBank">—</b><span>Spendable now</span></div></article>
+          <article class="metric-card glass"><span class="metric-icon">⇄</span><div><small>FREE TRANSFERS</small><b id="mTransfers">—</b><span id="mTransfersSub">Planner input</span></div></article>
+          <article class="metric-card glass"><span class="metric-icon">◉</span><div><small>DATA COVERAGE</small><b id="mAdvanced">—</b><span>FPL + shot enrichment</span></div></article>
+        </div>
+
+        <section class="panel glass reveal delay-2">
+          <div class="panel-head responsive"><div><span class="eyebrow">SMART SHORTLIST</span><h3>Best Options Right Now</h3><p>Large, comparable cards with explicit data-quality labels. Missing shot data never silently becomes zero.</p></div><div class="seg" id="topSegments"><button class="active" data-filter="score">Overall</button><button data-filter="captain">Captain</button><button data-filter="differential">Differential</button><button data-filter="value">Value</button><button data-filter="xgi">xGI</button><button data-filter="close">Chance Quality</button></div></div>
+          <div id="topPlayers" class="recommend-grid empty">Connect FPL to load recommendations.</div>
+        </section>
+
+        <div class="two-col reveal delay-3">
+          <section class="panel glass"><div class="panel-head"><div><span class="eyebrow">TRANSFER PULSE</span><h3>What Should I Do?</h3></div><button class="secondary" data-go="planner">Open Planner</button></div><div id="dashboardActions" class="action-summary empty">Connect FPL to analyze your squad.</div></section>
+          <section class="panel glass"><div class="panel-head"><div><span class="eyebrow">DATA QUALITY</span><h3>Coverage & Freshness</h3></div></div><div id="coveragePanel" class="coverage-grid"><div><i class="ok"></i><b>Official FPL</b><span>Prices, fixtures, points, ownership, teams, leagues</span></div><div><i id="understatDot"></i><b>Shot enrichment</b><span id="understatStatusText">Waiting for connection</span></div></div></section>
+        </div>
+      </section>
+
+      <section id="planner" class="view">
+        <section class="panel glass reveal">
+          <div class="panel-head responsive"><div><span class="eyebrow">TRANSFER DECISION ENGINE</span><h3>Buy · Sell · Keep · Monitor</h3><p>Recommendations constrained by your budget, squad positions and available free transfers.</p></div><div class="ft-control"><label>Free Transfers<input id="freeTransfers" type="number" min="1" max="5" value="1"></label><label>Horizon<select id="plannerHorizon"><option value="3">3 GWs</option><option value="4">4 GWs</option><option value="5" selected>5 GWs</option></select></label><button class="primary" id="recalcPlanner">Recalculate</button></div></div>
+          <div id="plannerSummary" class="planner-summary"></div>
+          <div class="planner-columns">
+            <div class="decision-column sell"><div class="decision-head"><span>SELL</span><b id="sellCount">0</b></div><div id="sellList" class="decision-list"></div></div>
+            <div class="decision-column buy"><div class="decision-head"><span>BUY</span><b id="buyCount">0</b></div><div id="buyList" class="decision-list"></div></div>
+            <div class="decision-column keep"><div class="decision-head"><span>KEEP</span><b id="keepCount">0</b></div><div id="keepList" class="decision-list"></div></div>
+            <div class="decision-column monitor"><div class="decision-head"><span>MONITOR</span><b id="monitorCount">0</b></div><div id="monitorList" class="decision-list"></div></div>
+          </div>
+        </section>
+      </section>
+
+      <section id="squad" class="view">
+        <section class="panel glass reveal"><div class="panel-head responsive"><div><span class="eyebrow">CURRENT SQUAD</span><h3>My Team</h3><p>Current lineup with live points, next fixture and projected 5-GW output.</p></div><div class="legend"><span><i class="diff-dot"></i>Differential</span><span><i class="risk-dot"></i>League risk</span></div></div><div id="fullSquad" class="pitch"><div class="empty">Connect your FPL Entry ID.</div></div></section>
+      </section>
+
+      <section id="players" class="view">
+        <section class="panel glass intelligence-panel reveal">
+          <div class="panel-head responsive"><div><span class="eyebrow">PRO PLAYER SCREENER</span><h3>Player Intelligence Lab</h3><p>Readable large-font table. Sort every column and combine multiple filters.</p></div><div class="lab-actions"><div class="search-wrap">⌕ <input id="playerSearch" placeholder="Search player or club…"></div><button class="secondary" id="toggleFilters">Filters</button><button class="secondary" id="resetSort">Reset Sort</button></div></div>
+          <div id="filterBar" class="filter-bar">
+            <label>Player<input id="fPlayer" placeholder="Player name"></label><label>Club<select id="fTeam"><option value="">All clubs</option></select></label><label>Position<select id="fPos"><option value="">All positions</option><option>GKP</option><option>DEF</option><option>MID</option><option>FWD</option></select></label><label>Status<select id="fStatus"><option value="">All statuses</option><option value="a">Available</option><option value="d">Doubtful</option><option value="i">Injured</option><option value="s">Suspended</option><option value="u">Unavailable</option></select></label>
+            <label>Rating<select id="fRatingOp"><option value=">=">≥</option><option value=">">&gt;</option><option value="=">=</option><option value="<">&lt;</option><option value="<=">≤</option></select></label><label>Rating value<input id="fRating" type="number" min="0" max="100" placeholder="75"></label><label>Price<select id="fPriceOp"><option value="<=">≤</option><option value="<">&lt;</option><option value="=">=</option><option value=">">&gt;</option><option value=">=">≥</option></select></label><label>Price £m<input id="fPrice" type="number" step="0.1" placeholder="8.0"></label>
+            <label>Min ownership %<input id="fOwned" type="number" step="0.1" placeholder="0"></label><label>Min xGI/90<input id="fXgi90" type="number" step="0.01" placeholder="0"></label><label>Min minutes<input id="fMinutes" type="number" placeholder="0"></label><label>Distance<select id="fDistOp"><option value="<=">≤</option><option value="<">&lt;</option><option value="=">=</option><option value=">">&gt;</option><option value=">=">≥</option></select></label><label>Avg dist m<input id="fDist" type="number" step="0.1" placeholder="8.0"></label><label>Data<select id="fData"><option value="">Any coverage</option><option value="advanced">Advanced shots available</option><option value="fpl">FPL only</option></select></label><button class="ghost" id="clearFilters">Clear all</button>
+          </div>
+          <div class="table-meta"><span id="rowCount">Loading players…</span><span><b>Chance proxy:</b> xG ≥ 0.30 · <b>Very close:</b> ≤8m · <b>Sort rule:</b> N/A values are always pushed to the end. · Blended data: Official FPL + Understat.</span></div>
+          <div class="table-wrap"><table id="playerTable"><thead><tr>
+            <th class="sticky-action">+</th><th class="sticky-player" data-key="web_name">Player</th><th data-key="teamName">Club</th><th data-key="position">Pos</th><th data-key="now_cost">Price</th><th data-key="score">Rating</th><th data-key="selected_by_percent">Own%</th><th data-key="form">Form</th><th data-key="total_points">Pts</th><th data-key="points_per_game">PPG</th><th data-key="expected_goal_involvements_per_90">xGI/90</th><th data-key="expected_goals_per_90">xG/90</th><th data-key="expected_assists_per_90">xA/90</th><th data-key="goals_scored">G</th><th data-key="assists">A</th><th data-key="shots">Shots</th><th data-key="shots_on_target">SoT</th><th data-key="xg_per_shot">xG/Shot</th><th data-key="avg_shot_distance_m">Avg Dist</th><th data-key="close_chances">Big Chances*</th><th data-key="very_close_shots">≤8m</th><th data-key="big_xg_missed">Big Misses</th><th data-key="fixture_score">Fixtures</th><th data-key="projected5">Proj 5</th><th data-key="dataCoverage">Data</th>
+          </tr></thead><tbody></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="compare" class="view">
+        <section class="panel glass reveal"><div class="panel-head responsive"><div><span class="eyebrow">SIDE-BY-SIDE</span><h3>Player Comparison</h3><p>Compare up to four players with normalized metric bars and forward projections.</p></div><button class="secondary" id="clearCompare">Clear</button></div><div id="comparisonBoard" class="comparison-board empty">Add players from Player Lab or recommendations.</div></section>
+        <section class="panel glass reveal"><div class="panel-head"><div><span class="eyebrow">REPLACEMENT ENGINE</span><h3>Selected vs Recommended</h3></div></div><div id="alternativeBoard" class="alternative-grid empty">Select players to see alternatives.</div></section>
+      </section>
+
+      <section id="leagues" class="view">
+        <section class="panel glass reveal"><div class="panel-head responsive"><div><span class="eyebrow">LEAGUE INTELLIGENCE</span><h3>Your Mini-Leagues</h3><p>Open any manager, compare squads, measure player ownership and quantify your differential/risk exposure.</p></div><div class="manager-search">⌕ <input id="managerSearch" placeholder="Search manager or team…"></div></div><div id="leagueCards" class="league-tabs empty">Connect FPL to load leagues.</div></section>
+        <div class="league-layout">
+          <section class="panel glass"><div class="panel-head"><div><span class="eyebrow">TEAMS</span><h3 id="leagueStandingsTitle">League standings</h3></div><span id="leagueLoadStatus" class="badge">—</span></div><div id="leagueStandings" class="empty">Choose a league.</div></section>
+          <section class="panel glass"><div class="panel-head responsive"><div><span class="eyebrow">PLAYER LEVERAGE</span><h3>My Squad vs League</h3><p>Selection % is calculated from loaded league squads, not global FPL ownership.</p></div><div class="seg" id="leagueExposureFilter"><button class="active" data-exp="all">All</button><button data-exp="differential">Differentials</button><button data-exp="risk">Risks</button><button data-exp="shield">Shields</button></div></div><div id="leagueExposure" class="empty">Open a league to calculate exposure.</div></section>
+        </div>
+      </section>
+
+      <section id="fixtures" class="view">
+        <section class="panel glass reveal fixture-center">
+          <div class="panel-head responsive"><div><span class="eyebrow">OFFICIAL FPL FDR</span><h3>Fixture Difficulty Center</h3><p>See every Premier League club's upcoming run with opponent, home/away, official FPL difficulty and an overall ease score.</p></div><div class="fixture-controls"><div class="seg" id="fixtureHorizon"><button data-fh="3">3 GWs</button><button data-fh="4">4 GWs</button><button class="active" data-fh="5">5 GWs</button></div><select id="fixtureSort"><option value="easiest">Easiest first</option><option value="hardest">Hardest first</option><option value="club">Club A–Z</option></select></div></div>
+          <div class="fdr-legend"><span><i class="fdr-1"></i>1 · Very Easy</span><span><i class="fdr-2"></i>2 · Easy</span><span><i class="fdr-3"></i>3 · Medium</span><span><i class="fdr-4"></i>4 · Hard</span><span><i class="fdr-5"></i>5 · Very Hard</span><span class="legend-note">H = Home · A = Away · DGW fixtures stack in the same GW</span></div>
+          <div id="fixtureMatrix" class="fixture-matrix empty">Loading official FPL fixtures…</div>
+        </section>
+        <section class="panel glass reveal">
+          <div class="panel-head"><div><span class="eyebrow">MY TEAM</span><h3>Squad Fixture Run</h3><p>Your 15 players ranked by upcoming fixture difficulty and projected points.</p></div></div>
+          <div id="squadFixtureRun" class="squad-fixture-run empty">Connect FPL to analyze your squad.</div>
+        </section>
+      </section>
+
+      <section id="simulator" class="view">
+        <section class="panel glass reveal"><div class="panel-head responsive"><div><span class="eyebrow">FORWARD MODEL</span><h3>3–5 Gameweek Team Simulator</h3><p>Projected player points combine recent FPL performance, expected involvement, opponent difficulty, home/away and minutes probability.</p></div><div class="seg" id="simHorizon"><button data-h="3">3 GWs</button><button data-h="4">4 GWs</button><button class="active" data-h="5">5 GWs</button></div></div><div id="simulationSummary" class="simulation-summary"></div><div id="simulationTable" class="empty">Connect FPL to simulate your squad.</div></section>
+      </section>
+
+      <section id="news" class="view">
+        <section class="panel glass reveal"><div class="panel-head responsive"><div><span class="eyebrow">TEAM & PLAYER NEWS</span><h3>Premier League News Room</h3><p>Search and jump directly to a club or player. Headlines open at the original source.</p></div><div class="news-search"><input id="newsSearch" placeholder="Search team or player…"><button class="primary" id="newsSearchBtn">Search</button></div></div><div id="newsQuick" class="quick-chips"></div><div id="newsGrid" class="news-grid empty">Search a player or club, or choose a quick filter.</div></section>
+      </section>
+
+
+      <section id="transfers" class="view">
+        <section class="panel glass reveal">
+          <div class="panel-head responsive"><div><span class="eyebrow">TRANSFER MARKET</span><h3>Premier League Player Transfers</h3><p>Current and recent player moves with date, previous club, destination club, fee and movement type. Dataset refreshes automatically from the public weekly football transfer dataset.</p></div><div class="lab-actions"><div class="search-wrap">⌕ <input id="transferSearch" placeholder="Search player or club…"></div><select id="transferType"><option value="">All moves</option><option value="in">Into Premier League</option><option value="out">Out of Premier League</option><option value="internal">Within Premier League</option></select></div></div>
+          <div class="filter-bar transfer-filters"><label>From club<select id="transferFrom"><option value="">All clubs</option></select></label><label>To club<select id="transferTo"><option value="">All clubs</option></select></label><label>Season<select id="transferSeason"><option value="2026">2026/27</option><option value="2025">2025/26</option></select></label><label>Fee<select id="transferFeeOp"><option value=">=">≥</option><option value=">">&gt;</option><option value="<=">≤</option><option value="<">&lt;</option></select></label><label>Fee €m<input id="transferFee" type="number" step="0.1" placeholder="0"></label><button class="ghost" id="clearTransferFilters">Clear</button></div>
+          <div class="table-meta"><span id="transferCount">Loading transfers…</span><span>Transfer fee is shown when available; free transfers display €0m and unknown fees display N/A.</span></div>
+          <div class="table-wrap"><table id="transferTable"><thead><tr><th data-tkey="transfer_date">Date</th><th data-tkey="player_name">Player</th><th data-tkey="from_club_name">From</th><th>→</th><th data-tkey="to_club_name">To</th><th data-tkey="transfer_fee">Fee</th><th data-tkey="market_value_in_eur">Market value</th><th data-tkey="transfer_season">Season</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="history" class="view"><section class="panel glass reveal"><div class="panel-head responsive"><div><span class="eyebrow">PERSISTENT INTELLIGENCE</span><h3>Gameweek History</h3><p>Save a snapshot each gameweek to preserve price, squad and rank history locally.</p></div><button class="primary" id="snapshotBtn">Save Snapshot</button></div><div id="historyTimeline" class="history-timeline empty">Connect FPL to load history.</div></section></section>
+    </main>
+  </div>
+
+  <div id="compareTray" class="compare-tray glass"><div><span>COMPARE</span><div id="compareTrayPlayers"></div></div><button class="primary" id="openCompare">Compare <b id="compareTrayCount">0</b></button></div>
+  <dialog id="connectDialog" class="glass dialog"><form method="dialog"><button class="dialog-x">×</button></form><span class="eyebrow">CONNECT FPL</span><h2>Your FPL Entry ID</h2><p>No password is required for public team, league and price data.</p><input id="entryIdInput" inputmode="numeric" placeholder="e.g. 1234567"><button class="primary full" id="connectSubmit">Connect Team</button></dialog>
+  <dialog id="accountDialog" class="glass dialog account-dialog"><form method="dialog"><button class="dialog-x">×</button></form><span class="eyebrow">HISHO FPL HUB ACCOUNT</span><h2 id="accountTitle">Sign in</h2><p id="accountIntro">Create an account to keep your FPL profile and app activity history. Usage events are recorded in the background to improve the product; passwords and authentication secrets are never logged.</p><input id="accountEmail" type="email" placeholder="Email"><input id="accountPassword" type="password" placeholder="Password (8+ characters)"><input id="accountName" placeholder="Display name"><button class="primary full" id="accountSubmit">Sign in</button><button class="ghost full" id="accountModeToggle" style="margin-top:8px">Create new account</button><button class="ghost full" id="accountLogout" style="display:none;margin-top:8px">Sign out</button></dialog>
+  <dialog id="playerDialog" class="glass player-dialog"><div id="playerDialogContent"></div></dialog>
+  <dialog id="teamDialog" class="glass team-dialog"><div id="teamDialogContent"></div></dialog>
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
