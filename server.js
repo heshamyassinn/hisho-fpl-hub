@@ -34,7 +34,17 @@ async function cachedGzipCsv(name,ttl=21600000){const key='gzcsv:'+name,hit=cach
 function parseCsv(text){const rows=[];let row=[],cell='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(q&&text[i+1]==='"'){cell+='"';i++}else q=!q}else if(c===','&&!q){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);cell='';if(row.some(x=>x!==''))rows.push(row);row=[]}else cell+=c}if(cell||row.length){row.push(cell);rows.push(row)}if(rows.length<2)return[];const h=rows[0];return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]??''])))}
 function clubKey(s=''){return norm(s).replace(/footballclub|afc|fc$/g,'').replace(/and/g,'')}
 function isCurrentPlClub(name,teams){const k=clubKey(name);return teams.some(t=>{const a=clubKey(t.name),b=clubKey(t.short_name);return k===a||k===b||a.includes(k)||k.includes(a)})}
-app.get('/api/market-data',async(req,res)=>res.json({updated_at:new Date().toISOString(),source:'safe-mode',transfers:[],images:[],warning:'Transfer enrichment temporarily disabled to protect the Render Free memory limit.'}));
+function parseCsvLine(line){const out=[];let cell='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cell+='"';i++}else q=!q}else if(c===','&&!q){out.push(cell);cell=''}else cell+=c}out.push(cell);return out}
+async function loadRecentPlTransfers(teams,ttl=21600000){
+  const key='market:pl-transfers',hit=cache.get(key);if(hit&&Date.now()-hit.ts<ttl)return hit.data;
+  const r=await fetch(`${MARKET_BASE}/transfers.csv.gz`,{headers:{'User-Agent':'Hisho-FPL-Hub/5.4'}});if(!r.ok||!r.body)throw new Error(`Transfer dataset ${r.status}`);
+  const {Readable}=await import('node:stream'),{createInterface}=await import('node:readline');
+  const input=Readable.fromWeb(r.body).pipe(zlib.createGunzip()),rl=createInterface({input,crlfDelay:Infinity});
+  let headers=null;const rows=[];
+  for await(const line of rl){if(!line)continue;const cells=parseCsvLine(line);if(!headers){headers=cells;continue}const row=Object.fromEntries(headers.map((h,i)=>[h,cells[i]??'']));const d=String(row.transfer_date||'');if(d<'2025-06-01')continue;if(!isCurrentPlClub(row.from_club_name,teams)&&!isCurrentPlClub(row.to_club_name,teams))continue;rows.push(row)}
+  rows.sort((a,b)=>String(b.transfer_date).localeCompare(String(a.transfer_date)));const data=rows.slice(0,1000);cache.set(key,{ts:Date.now(),data});return data
+}
+app.get('/api/market-data',async(req,res)=>{try{const bootstrap=await cachedJson(`${FPL}/bootstrap-static/`,300000),transfers=await loadRecentPlTransfers(bootstrap.teams||[]);res.json({updated_at:new Date().toISOString(),source:'dcaribou/transfermarkt-datasets (streamed, weekly refresh)',transfers,images:[]})}catch(e){res.status(502).json({error:e.message,transfers:[],images:[]})}});
 
 app.get('/api/fpl/bootstrap',proxy(()=>`${FPL}/bootstrap-static/`,300000));
 app.get('/api/fpl/entry/:id',proxy(req=>`${FPL}/entry/${req.params.id}/`,60000));
